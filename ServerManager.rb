@@ -15,13 +15,15 @@ class ServerManager
 							client2ID INT,
 							ip TEXT
 						)"
-			@db.execute "CREATE TABLE clients
+			@db.execute "CREATE TABLE users
 						(
 							id INT,
 							ip TEXT,
 							league TEXT,
 							wins INT,
-							losses INT
+							losses INT,
+							username TEXT,
+							password TEXT
 						)"
 			@db.commit
 		rescue SQLite3::Exception => e
