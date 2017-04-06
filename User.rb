@@ -2,7 +2,7 @@ class User
 
 	def initialize(username,ip,password)
 		@username = username
-		@ip = @ip
+		@ip = ip
 		@password = password
 	end
 
