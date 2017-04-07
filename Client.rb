@@ -1,9 +1,11 @@
 require 'sqlite3'
+require_relative 'DatabaseManager'
 
 class Client
 
+	#move dm to server?
 	def initialize
-
+		@dm = DatabaseManager.new
 	end
 
 
@@ -28,29 +30,26 @@ class Client
 		@user = user
 	end
 
-	def check_user_exists
-		begin
-			stm = @db.prepare 'select * from users where username=? and password =?'
-			stm.bind_param 1, @user.get_username
-			stm.bind_param 2, @user.get_password
-			user_info = stm.execute
 
-			puts user_info.eof?
-			if user_info.next != nil
-				user_info.each_hash{|h| puts h['id']}
-			end
-		rescue SQLite3::Exception => e
-			puts "Exception occurred"
-			puts e
+	def check_user_exists
+		u = @dm.get_user(@user)
+		if u
+			@user  = u
 		end
+		
 	end
 
 	def close_db
 		@db.close if @db
 	end
 
+	def add_user
 
+		@dm.add_user(@user)
+	end
 
-
+	def get_user
+		@user
+	end
 
 end
