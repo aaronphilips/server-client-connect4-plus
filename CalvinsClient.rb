@@ -33,10 +33,14 @@ while true
 			if (answer == "y")
 				puts "new user!"
 				client.add_user
+				puts "added user"
 				client.check_user_exists
+				puts "checked user exists"
 				user = client.get_user
+				puts "got user"
 				# p user.get_id, user.get_ip
-				clientRPC.add_server(user.get_id, user.get_ip, 1)
+				clientRPC.add_server(1, "hi", 1)
+				puts "added server"
 				break
 			end
 			break

@@ -1,0 +1,27 @@
+drop table if exists users;
+drop table if exists server;
+
+CREATE TABLE users
+						(
+							id INT,
+							ip TEXT,
+							league TEXT,
+							wins INT,
+							losses INT,
+							username TEXT,
+							password TEXT
+						);
+CREATE TABLE server
+						(
+							id INT,
+							clientID INT,
+							ip TEXT,
+							available INT
+						);
+
+insert into users values (1,'ip','league',0,0,'c','c');
+
+insert into server values (1,1,'172',1);
+insert into server values (1,1,'127',1);
+insert into server values (1,1,'192',1);
+insert into server values (1,1,'000',1);
