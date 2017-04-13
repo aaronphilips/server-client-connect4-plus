@@ -36,7 +36,7 @@ while true
 				client.check_user_exists
 				user = client.get_user
 				# p user.get_id, user.get_ip
-				clientRPC.add_server(user.get_id, user.get_ip)
+				clientRPC.add_server(user.get_id, user.get_ip, 1)
 				break
 			end
 			break

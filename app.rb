@@ -10,16 +10,15 @@ require_relative 'User'
 require "xmlrpc/client"
 require_relative 'DatabaseManager'
 require 'socket'
-# dm = DatabaseManager.new
-# dm.set_up
+dm = DatabaseManager.new
+dm.set_up
 
 class App
-
 
 	def initialize
 
         @clientStub = XMLRPC::Client.new(ENV['HOSTNAME'], "/RPC2", 50500)
-        @clientRPC = @clientStub.proxy("server")
+        @clientRPC = @clientStub.proxy("server")    
 
         @client = Client.new
         @res = @client.get_server_manager_info  
@@ -390,6 +389,35 @@ class App
         end
     end
 
+    def lobby_window
+        lobby_window = Gtk::Dialog.new
+        # invalid_login_window.set_default_size(300,100)
+        lobby_window.title = "Lobby"
+        lobby_window.transient_for = @online_dialog
+        lobby_window.resizable=(true)
+        label = Gtk::Label.new("select ")
+        lobby_window.child.add(label)
+
+        online_servers = @clientRPC.get_server;
+
+        puts online_servers
+
+        login_window.add_button "Sign Up", 1
+        login_window.add_button "Cancel", 2
+        
+        invalid_login_window.signal_connect("response") do |widget, response|
+            case response
+            when 1
+                signup
+                invalid_login_window.destroy
+            when 2
+                invalid_login_window.destroy
+            end
+        end
+        invalid_login_window.set_window_position :center
+        invalid_login_window.show_all
+    end
+
     def signup
 
         username = @username.text
@@ -404,8 +432,11 @@ class App
         @client.add_user
         @client.check_user_exists
         user = @client.get_user
-        # p user.get_id, user.get_ip
-        @clientRPC.add_server(user.get_id, user.get_ip)
+        p user.get_id, user.get_ip
+        puts "adding server"
+        # @clientRPC.add_server(user.get_id, user.get_ip,1)
+        # puts user.get
+        puts @clientStub.call('server.add_server',user.get_id, user.get_ip,1)
     end
 
     

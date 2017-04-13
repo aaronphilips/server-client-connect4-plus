@@ -16,7 +16,8 @@ class DatabaseManager
 						(
 							id INT,
 							clientID INT,
-							ip TEXT
+							ip TEXT,
+							online INT
 						)"
 			@db.execute "CREATE TABLE users
 						(
@@ -76,7 +77,9 @@ class DatabaseManager
 			stm.bind_param 3, user.get_password
 
 			stm.execute
+			# stm.close
 			@db.commit
+			@db.close()
 		rescue SQLite3::Exception => e
 			puts "Exception occurred"
 			puts e
