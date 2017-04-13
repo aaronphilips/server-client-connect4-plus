@@ -16,7 +16,9 @@ class DatabaseManager
 							id INT,
 							clientID INT,
 							ip TEXT,
+							port INT,
 							available INT
+
 						)"
 			@db.execute "CREATE TABLE users
 						(
@@ -34,29 +36,79 @@ class DatabaseManager
 			puts "Exception occurred"
 			puts e
 			@db.rollback
+		ensure
+			@db.close
 		end
 	end
 
-	def get_user(user)
+	def add_server(ip,port,clientID)
+		begin
+			@db = SQLite3::Database.open "test.db"
+			@db.transaction
+			stm=@db.prepare "INSERT INTO server(id,clientID,ip,port,available)
+			SELECT IFNULL(MAX(id), 0) + 1,?,?,?,1 from users"
+
+			stm.bind_param 1, clientID
+			stm.bind_param 2, ip
+			stm.bind_param 3, port
+
+			stm.execute
+			stm.close
+			@db.commit
+			@db.close()
+		rescue SQLite3::Exception => e
+			puts "Exception occurred"
+			puts e
+		end
+	end
+
+	def get_connected_ips
+		arr = Array.new
+		begin
+			@db = SQLite3::Database.open "test.db"
+			# @db.transaction
+			stm=@db.prepare 'select ip from server where available=1'
+			ip_info = stm.execute
+
+
+			while row =ip_info.next do
+				# puts row.join "\s"
+				arr.push(row[0].chomp)
+			end
+				
+			ip_info.close
+		rescue SQLite3::Exception => e
+			puts "Exception occurred"
+			puts e
+			@db.rollback
+		ensure
+			@db.close
+		end
+		return arr
+
+	end
+
+	def get_user(username, password)
 		begin
 			if !@db
    				@db = SQLite3::Database.open "test.db"
    			end
 			stm = @db.prepare 'select * from users where username=? and password =?'
-			stm.bind_param 1, user.get_username
-			stm.bind_param 2, user.get_password
+			stm.bind_param 1, get_username
+			stm.bind_param 2, get_password
 			user_info = stm.execute
 			# puts user_info.eof?
 			user_res=user_info.next
+			str = ""
 			if user_res != nil
-				user.set_id(user_res[0])
-				user.set_ip(user_res[1])
-				user.set_league(user_res[2])
-				user.set_wins(user_res[3])
-				user.set_losses(user_res[4])
-				user.set_username(user_res[5])
-				user.set_password(user_res[6])
-				return user
+				str=str+user_res[0]+" "
+				str=str+user_res[1]+" "
+				str=str+user_res[2]+" "
+				str=str+user_res[3]+" "
+				str=str+user_res[4]+" "
+				str=str+user_res[5]+" "
+				str=str+user_res[6]+" "
+				return str
 			end
 		rescue SQLite3::Exception => e
 			puts "Exception occurred1"
@@ -136,4 +188,9 @@ class DatabaseManager
 
 end
 
+dbm = DatabaseManager.new 
+# dbm.set_up
+# dbm.add_server(1,2,3)
+dbm.add_server(4,1,3)
+dbm.get_connected_ips
 # sm = ServerManager.new
