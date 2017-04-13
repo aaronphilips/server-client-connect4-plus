@@ -3,20 +3,33 @@ require_relative 'DatabaseManager'
 require 'sqlite3'
 
 
-@dm = DatabaseManager.new
-@dm.set_up
 
 port = 50500
 
 class Server
    INTERFACE = XMLRPC::interface("server") {
-   meth 'int add(int, int)', 'Add two numbers', 'add'
-   meth 'int div(int, int)', 'Divide two numbers'
+
    meth 'void add_server(fixnum, string, fixnum)', 'adds new server', 'add_server'
    meth 'void get_servers()', 'gets current servers', 'get_servers'
+   meth 'void create_thread()',"makes a thread",'create_thread'
 }
-   def add(a, b) a + b end
-   def div(a, b) a / b end
+
+
+
+	# def initialize
+	# 	# @dm = DatabaseManager.new
+	# 	# @dm.set_up
+	# 	Thread.new{p "hello "}
+	# end
+	def create_thread(a,b)
+		Thread.new{p "hello "}
+	end
+
+	def initialize(client)
+		@client =client
+	end
+
+
    def add_server(id, ip, online)
 		# puts user.class
 		begin
@@ -53,10 +66,9 @@ class Server
 			puts e
 		end	
 	end
+
+
+
+
 end
 
-server = XMLRPC::Server.new(port, ENV['HOSTNAME'])
-
-server.add_handler(Server::INTERFACE,  Server.new)
-
-server.serve
