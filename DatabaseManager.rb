@@ -89,17 +89,19 @@ class DatabaseManager
 	end
 
 	def get_user(username, password)
+		str = ""
 		begin
-			if !@db
-   				@db = SQLite3::Database.open "test.db"
-   			end
+			p "here -2"
+			@db = SQLite3::Database.open "test.db"
 			stm = @db.prepare 'select * from users where username=? and password =?'
-			stm.bind_param 1, get_username
-			stm.bind_param 2, get_password
+			p "here -1"
+			stm.bind_param 1, username
+			stm.bind_param 2, password
+			p "here 0"
 			user_info = stm.execute
 			# puts user_info.eof?
 			user_res=user_info.next
-			str = ""
+			p "here 1"
 			if user_res != nil
 				str=str+user_res[0]+" "
 				str=str+user_res[1]+" "
@@ -108,13 +110,17 @@ class DatabaseManager
 				str=str+user_res[4]+" "
 				str=str+user_res[5]+" "
 				str=str+user_res[6]+" "
-				return str
+				p str
+				
 			end
 		rescue SQLite3::Exception => e
 			puts "Exception occurred1"
 			puts e
+		ensure
+			@db.close
 		end
-		return false
+
+		return str
 	end
 
 
@@ -188,9 +194,9 @@ class DatabaseManager
 
 end
 
-dbm = DatabaseManager.new 
-# dbm.set_up
-# dbm.add_server(1,2,3)
-dbm.add_server(4,1,3)
-dbm.get_connected_ips
+# dbm = DatabaseManager.new 
+# # dbm.set_up
+# # dbm.add_server(1,2,3)
+# dbm.add_server(4,1,3)
+# dbm.get_connected_ips
 # sm = ServerManager.new

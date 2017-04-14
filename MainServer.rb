@@ -18,18 +18,27 @@ class MainServer
 		loop do
 			Thread.fork(@server.accept) do |client|
 				username = client.gets
+				p username
 				password = client.gets
+				p password
 				str=@dm.get_user(username,password)
+				p str
 				client.puts str
+
 				signupMessage = client.gets
+				p signupMessage
 				if signupMessage=="signup"
 					ip = client.gets
 					@dm.add_user(ip,username,password)
 				end
 
+
 				available_ips=@dm.get_connected_ips
-				puts available_ips
+				# puts available_ips
+				client.puts availabe_ips.length
 				client.puts available_ips
+
+
 				# clientMessage=client.gets 
 				# if clientMessage=="New"
 				# client.puts("Hello, I'm Ruby TCP server", "I'm disconnecting, bye :*")

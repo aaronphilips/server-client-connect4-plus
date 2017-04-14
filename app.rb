@@ -7,8 +7,6 @@ require_relative 'GameManager'
 require_relative 'AI'
 require_relative 'Client'
 require_relative 'User'
-require "xmlrpc/client"
-require_relative 'DatabaseManager'
 require 'socket'
 
 
@@ -20,8 +18,8 @@ class App
 
         @socket = TCPSocket.open("localhost", 50500)
 
-        @clientStub = XMLRPC::Client.new(ENV['HOSTNAME'], "/RPC2", 50500)
-        @clientRPC = @clientStub.proxy("server")    
+        # @clientStub = XMLRPC::Client.new(ENV['HOSTNAME'], "/RPC2", 50500)
+        # @clientRPC = @clientStub.proxy("server")    
 
         # @client = Client.new
         # @res = @client.get_server_manager_info  
@@ -349,6 +347,7 @@ class App
         @socket.puts username
         @socket.puts password
         user_info = @socket.gets
+        p user_info
         if user_info.empty? 
 
             invalid_login_window = Gtk::Dialog.new
@@ -366,6 +365,7 @@ class App
                 case response
                 when 1
                     @socket.puts "signup"
+                    
                     signup
                     invalid_login_window.destroy
                 when 2
