@@ -94,8 +94,8 @@ class DatabaseManager
    				@db = SQLite3::Database.open "test.db"
    			end
 			stm = @db.prepare 'select * from users where username=? and password =?'
-			stm.bind_param 1, get_username
-			stm.bind_param 2, get_password
+			stm.bind_param 1, username
+			stm.bind_param 2, password
 			user_info = stm.execute
 			# puts user_info.eof?
 			user_res=user_info.next

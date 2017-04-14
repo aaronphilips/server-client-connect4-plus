@@ -20,8 +20,8 @@ class App
 
         @socket = TCPSocket.open("localhost", 50500)
 
-        @clientStub = XMLRPC::Client.new(ENV['HOSTNAME'], "/RPC2", 50500)
-        @clientRPC = @clientStub.proxy("server")    
+        # @clientStub = XMLRPC::Client.new(ENV['HOSTNAME'], "/RPC2", 50500)
+        # @clientRPC = @clientStub.proxy("server")    
 
         # @client = Client.new
         # @res = @client.get_server_manager_info  
@@ -378,8 +378,18 @@ class App
             @socket.puts "no signup"
             puts "welcome!"
             @online_dialog.hide
+            ip_arr = Array.new
+            length = @socket.gets.to_i
+            (0..length).each do
+                ip = @sockets.get
+                ip_arr.push(ip)
+            end
+            p ip_array
+            # clientMessage = @socket.gets
+            # if clientMessage == ""
             # @window.show
-            ip_array = @dm.get_servers();
+            # ip_array = @dm.get_servers();
+            # @socket.puts "get server"
             # all_servers.each do |row|
             #     puts row.join "\s"
             # end 
