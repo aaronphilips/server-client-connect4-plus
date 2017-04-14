@@ -21,7 +21,7 @@ class App
         # @clientStub = XMLRPC::Client.new(ENV['HOSTNAME'], "/RPC2", 50500)
         # @clientRPC = @clientStub.proxy("server")    
 
-        # @client = Client.new
+        @client = Client.new
         # @res = @client.get_server_manager_info  
 
 		Gtk.init
@@ -346,8 +346,9 @@ class App
         # @client.set_user(user)
         @socket.puts username
         @socket.puts password
-        user_info = @socket.gets
+        user_info = @socket.gets.chomp
         p user_info
+        p "helloooo"
         if user_info.empty? 
 
             invalid_login_window = Gtk::Dialog.new
@@ -378,8 +379,18 @@ class App
             @socket.puts "no signup"
             puts "welcome!"
             @online_dialog.hide
+            ip_arr = Array.new
+            length = @socket.gets.chomp.to_i
+            length.times do
+                ip = @sockets.gets.chomp
+                ip_arr.push(ip)
+            end
+            p ip_array
+            # clientMessage = @socket.gets
+            # if clientMessage == ""
             # @window.show
-            ip_array = @dm.get_servers();
+            # ip_array = @dm.get_servers();
+            # @socket.puts "get server"
             # all_servers.each do |row|
             #     puts row.join "\s"
             # end 

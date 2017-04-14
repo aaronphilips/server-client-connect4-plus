@@ -16,12 +16,13 @@ CREATE TABLE server
 							id INT,
 							clientID INT,
 							ip TEXT,
+							port int, 
 							available INT
 						);
 
 insert into users values (1,'ip','league',0,0,'c','c');
 
-insert into server values (1,1,'172',1);
-insert into server values (1,1,'127',1);
-insert into server values (1,1,'192',1);
-insert into server values (1,1,'000',1);
+insert into server values (1,1,'172',1,1);
+insert into server values (1,1,'127',2,1);
+insert into server values (1,1,'192',3,1);
+insert into server values (1,1,'000',4,1);

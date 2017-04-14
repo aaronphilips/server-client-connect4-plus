@@ -7,7 +7,7 @@ class MainServer
 	def initialize
 
 		@dm = DatabaseManager.new
-		@dm.set_up
+		# @dm.set_up
 		@dm.add_server(4,1,3)
 		@dm.add_server(3,1,3)
 		@server = TCPServer.open(50500)
@@ -25,19 +25,20 @@ class MainServer
 				p str
 				client.puts str
 
-				signupMessage = client.gets
+				signupMessage = client.gets.chomp
 				p signupMessage
 				if signupMessage=="signup"
-					ip = client.gets
+					ip = client.gets.chomp
 					@dm.add_user(ip,username,password)
 				end
 
 
 				available_ips=@dm.get_connected_ips
 				# puts available_ips
-				client.puts availabe_ips.length
-				client.puts available_ips
-
+				client.puts available_ips.length
+				if available_ips.length != 0
+					client.puts available_ips
+				end
 
 				# clientMessage=client.gets 
 				# if clientMessage=="New"

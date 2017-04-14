@@ -7,7 +7,7 @@ class DatabaseManager
 
 	def set_up
 		begin
-			@db = SQLite3::Database.open "test.db"
+			# @db = SQLite3::Database.open "test.db"
 			@db.transaction
 			@db.execute "DROP TABLE IF EXISTS server"
 			@db.execute "DROP TABLE IF EXISTS users"
@@ -37,13 +37,13 @@ class DatabaseManager
 			puts e
 			@db.rollback
 		ensure
-			@db.close
+			# @db.close
 		end
 	end
 
 	def add_server(ip,port,clientID)
 		begin
-			@db = SQLite3::Database.open "test.db"
+			# @db = SQLite3::Database.open "test.db"
 			@db.transaction
 			stm=@db.prepare "INSERT INTO server(id,clientID,ip,port,available)
 			SELECT IFNULL(MAX(id), 0) + 1,?,?,?,1 from users"
@@ -55,7 +55,7 @@ class DatabaseManager
 			stm.execute
 			stm.close
 			@db.commit
-			@db.close()
+			# @db.close()
 		rescue SQLite3::Exception => e
 			puts "Exception occurred"
 			puts e
@@ -65,7 +65,7 @@ class DatabaseManager
 	def get_connected_ips
 		arr = Array.new
 		begin
-			@db = SQLite3::Database.open "test.db"
+			# @db = SQLite3::Database.open "test.db"
 			# @db.transaction
 			stm=@db.prepare 'select ip from server where available=1'
 			ip_info = stm.execute
@@ -92,17 +92,26 @@ class DatabaseManager
 		str = ""
 		begin
 			p "here -2"
-			@db = SQLite3::Database.open "test.db"
-			stm = @db.prepare 'select * from users where username=? and password =?'
+			dbm = SQLite3::Database.open "test.db"
+			username=username.to_s
+			password=password.to_s
+			puts username
+
+			puts password
+			user_info = dbm.execute	"select * from users where username = \"#{username}\" and password = \"#{password}\""
+
 			p "here -1"
-			stm.bind_param 1, username
-			stm.bind_param 2, password
-			p "here 0"
-			user_info = stm.execute
+			# stm.bind_param 1, username
+			# stm.bind_param 2, password
+			# p stm
+			# user_info = stm.execute
+			# user_info.each_hash{|h| puts h['username']}
 			# puts user_info.eof?
+			p user_info
 			user_res=user_info.next
-			p "here 1"
+			p user_res
 			if user_res != nil
+				p "here 2"
 				str=str+user_res[0]+" "
 				str=str+user_res[1]+" "
 				str=str+user_res[2]+" "
@@ -117,19 +126,19 @@ class DatabaseManager
 			puts "Exception occurred1"
 			puts e
 		ensure
-			@db.close
+			# @db.close
 		end
-
-		return str
+		p str
+		return str.chomp
 	end
 
 
 	def add_user(ip, username, password, online)
    	puts " adding user"
    		begin
-   			if !@db 
-   				@db = SQLite3::Database.open "test.db"
-   			end
+   			# if !@db 
+   			# 	@db = SQLite3::Database.open "test.db"
+   			# end
 			@db.transaction
 			stm=@db.prepare "INSERT INTO users(id,ip,league,wins,losses,username,password, online)
 			SELECT IFNULL(MAX(id), 0) + 1,?,0,0,0,?,?,? from users"
@@ -155,7 +164,7 @@ class DatabaseManager
 
 	def get_servers
 		begin
-			@db = SQLite3::Database.open "test.db"
+			# @db = SQLite3::Database.open "test.db"
 			# @db.transaction
 			  online_servers = @db.query('select ip from server where available = 1')
 
@@ -177,9 +186,9 @@ class DatabaseManager
 	end
 
 	def check_user_exists(user)
-		if !@db 
-   			@db = SQLite3::Database.open "test.db"
-   		end
+		# if !@db 
+  #  			@db = SQLite3::Database.open "test.db"
+  #  		end
 		u = get_user(user)
 		if u
 			user  = u
@@ -195,7 +204,7 @@ class DatabaseManager
 end
 
 # dbm = DatabaseManager.new 
-# # dbm.set_up
+# dbm.set_up
 # # dbm.add_server(1,2,3)
 # dbm.add_server(4,1,3)
 # dbm.get_connected_ips
